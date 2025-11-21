@@ -1,0 +1,39 @@
+{
+  "validCustomers": [
+    {
+      "firstName": "John",
+      "lastName": "Smith",
+      "postalCode": "12345"
+    },
+    {
+      "firstName": "Tom",
+      "lastName": "Lee",
+      "postalCode": "00000"
+    },
+    {
+      "firstName": "Mark",
+      "lastName": "Stone",
+      "postalCode": "11111"
+    }
+  ],
+  "invalidCustomers": [
+    {
+      "firstName": "",
+      "lastName": "Doe",
+      "postalCode": "12345",
+      "expectedError": "Error: First Name is required"
+    },
+    {
+      "firstName": "Jane",
+      "lastName": "",
+      "postalCode": "12345",
+      "expectedError": "Error: Last Name is required"
+    },
+    {
+      "firstName": "Bob",
+      "lastName": "Smith",
+      "postalCode": "",
+      "expectedError": "Error: Postal Code is required"
+    }
+  ]
+}
