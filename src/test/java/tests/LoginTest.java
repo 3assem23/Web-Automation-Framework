@@ -32,7 +32,7 @@ public class LoginTest extends TestBase {
 
     @Test(
             priority = 0,
-            groups = {"smoke", "sanity"}
+            groups = {"smoke", "sanity", "regression"}
     )
     @Severity(SeverityLevel.NORMAL)
     @Story("Login page accessibility")

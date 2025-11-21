@@ -1,4 +1,4 @@
-# 🎓 ITI Graduation Project: Sauce Demo Automation Framework
+# 🎓 ITI Graduation Project: Swag Labs Automation Framework
 
 **Comprehensive Selenium WebDriver + TestNG + Allure Reports Automation Framework**
 
