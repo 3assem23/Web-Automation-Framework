@@ -32,7 +32,7 @@ public class LoginTest extends TestBase {
 
     @Test(
             priority = 0,
-            groups = {"smoke", "sanity", "regression"}
+            groups = {"smoke", "sanity"}
     )
     @Severity(SeverityLevel.NORMAL)
     @Story("Login page accessibility")
@@ -49,7 +49,7 @@ public class LoginTest extends TestBase {
 
     @Test(
             priority = 1,
-            groups = {"smoke", "regression", "login"}
+            groups = {"smoke", "login"}
     )
     @Severity(SeverityLevel.BLOCKER)
     @Story("User can login with valid credentials")
@@ -73,7 +73,7 @@ public class LoginTest extends TestBase {
     @Test(
             dataProvider = "invalidCredentials",
             priority = 2,
-            groups = {"regression", "login", "negative"}
+            groups = {"regression","login" ,"negative"}
     )
     @Severity(SeverityLevel.CRITICAL)
     @Story("User cannot login with invalid credentials")

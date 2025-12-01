@@ -37,13 +37,13 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult result) {
-        System.out.println("\n STARTING TEST: " + getTestName(result));
+        System.out.println("\n▶ STARTING TEST: " + getTestName(result));
     }
 
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        System.out.println("✓ PASSED: " + getTestName(result));
+        System.out.println("✔ PASSED: " + getTestName(result));
     }
 
 
@@ -55,31 +55,40 @@ public class TestListener implements ITestListener {
         captureScreenshot(result);
 
         Allure.addAttachment("Failure Reason", result.getThrowable().getMessage());
+
+        Allure.addAttachment("Stack Trace", "text/plain",
+                getStackTrace(result.getThrowable()), ".txt");
     }
 
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        System.out.println("SKIPPED: " + getTestName(result));
+        System.out.println("⊘ SKIPPED: " + getTestName(result));
+        if (result.getThrowable() != null) {
+            System.out.println("  Reason: " + result.getThrowable().getMessage());
+        }
     }
 
 
     @Override
     public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-        System.out.println("FAILED (Within Success %): " + getTestName(result));
+        System.out.println("⚠ FAILED (Within Success %): " + getTestName(result));
     }
 
 
     @Override
     public void onTestFailedWithTimeout(ITestResult result) {
-        System.out.println(" TIMEOUT: " + getTestName(result));
+        System.out.println("⏱ TIMEOUT: " + getTestName(result));
         onTestFailure(result);
     }
 
 
+
     private String getTestName(ITestResult result) {
-        return result.getTestClass().getRealClass().getSimpleName() + "." + result.getMethod().getMethodName();
+        return result.getTestClass().getRealClass().getSimpleName() + "." +
+                result.getMethod().getMethodName();
     }
+
 
 
     private void captureScreenshot(ITestResult result) {
@@ -96,12 +105,32 @@ public class TestListener implements ITestListener {
                         ".png"
                 );
 
-                System.out.println("Screenshot captured and attached to report");
+                System.out.println("  📸 Screenshot captured and attached to report");
             }
         } catch (Exception e) {
-            System.out.println("Failed to capture screenshot: " + e.getMessage());
+            System.out.println("  ⚠ Failed to capture screenshot: " + e.getMessage());
         }
     }
+
+
+
+    private String getStackTrace(Throwable throwable) {
+        if (throwable == null) return "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(throwable.toString()).append("\n");
+
+        for (StackTraceElement element : throwable.getStackTrace()) {
+            sb.append("\tat ").append(element.toString()).append("\n");
+        }
+
+        if (throwable.getCause() != null) {
+            sb.append("Caused by: ").append(getStackTrace(throwable.getCause()));
+        }
+
+        return sb.toString();
+    }
+
 
 
     @Attachment(value = "Failure Screenshot", type = "image/png")

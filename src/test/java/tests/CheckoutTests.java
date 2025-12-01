@@ -18,6 +18,17 @@ public class CheckoutTests extends TestBase {
 
     //DATA PROVIDER
 
+    @DataProvider(name = "validCustomers")
+    public Object[][] validCustomers() {
+        List<Map<String, String>> customers = JsonDataReader.getValidCustomers();
+        Object[][] data = new Object[customers.size()][1];
+
+        for (int i = 0; i < customers.size(); i++) {
+            data[i][0] = customers.get(i);
+        }
+
+        return data;
+    }
 
     @DataProvider(name = "invalidCustomers")
     public Object[][] invalidCustomers() {
@@ -34,7 +45,7 @@ public class CheckoutTests extends TestBase {
 
     @Test(
             priority = 1,
-            groups = {"smoke", "regression", "checkout"}
+            groups = {"smoke","checkout"}
     )
     @Severity(SeverityLevel.BLOCKER)
     @Story("User can complete checkout successfully")
@@ -60,39 +71,34 @@ public class CheckoutTests extends TestBase {
 
     @Test(
             priority = 2,
+            dataProvider = "validCustomers",
             groups = {"regression", "checkout"}
     )
     @Severity(SeverityLevel.CRITICAL)
     @Story("Checkout works with various customers")
-    public void CheckoutWithMultipleCustomersTest() {
-        AllureLogger.logStep("Testing checkout with multiple customers");
+    public void CheckoutWithMultipleCustomersTest(Map<String, String> customer) {
 
-        List<Map<String, String>> customers = JsonDataReader.getValidCustomers();
+        AllureLogger.logInfo("Testing with: " + customer.get("firstName") + " " + customer.get("lastName"));
 
-        for (Map<String, String> customer : customers) {
-            AllureLogger.logInfo("Testing with: " + customer.get("firstName") + " " + customer.get("lastName"));
+        ProductsPage products = loginAsUser();
 
-            ProductsPage products = loginAsUser();
+        products.addToCartById(products.BACKPACK_ID)
+                .goToCart()
+                .proceedToCheckout()
+                .completeOrder(
+                        customer.get("firstName"),
+                        customer.get("lastName"),
+                        customer.get("postalCode")
+                );
 
-            products.addToCartById(products.BACKPACK_ID)
-                    .goToCart()
-                    .proceedToCheckout()
-                    .completeOrder(
-                            customer.get("firstName"),
-                            customer.get("lastName"),
-                            customer.get("postalCode")
-                    );
-
-            driver.get(EnvFactory.getBaseUrl());
-        }
-
-        AllureLogger.logStep("All customers tested successfully");
+        AllureLogger.logStep("Customer checkout completed successfully");
     }
+
 
 
     @Test(
             priority = 3,
-            groups = {"regression", "checkout", "validation"}
+            groups = {"regression", "checkout", "validation", "Negative"}
     )
     @Severity(SeverityLevel.CRITICAL)
     @Story("Checkout validates required fields")
@@ -114,7 +120,7 @@ public class CheckoutTests extends TestBase {
     @Test(
             priority = 4,
             dataProvider = "invalidCustomers",
-            groups = {"regression", "checkout", "validation"}
+            groups = {"regression", "checkout", "validation","Negative"}
     )
     @Severity(SeverityLevel.NORMAL)
     @Story("Checkout shows error for each missing field")
@@ -166,7 +172,7 @@ public class CheckoutTests extends TestBase {
 
     @Test(
             priority = 6,
-            groups = {"smoke", "regression", "checkout", "pricing"}
+            groups = {"smoke", "checkout", "pricing"}
     )
     @Severity(SeverityLevel.BLOCKER)
     @Story("Checkout calculates prices accurately")

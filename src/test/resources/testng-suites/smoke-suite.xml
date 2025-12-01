@@ -2,35 +2,19 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 <!--
-    Smoke Suite: Critical path tests (Login + Add to Cart + Checkout)
+    Smoke Suite: Critical path tests - 13 tests
 -->
-<suite name="Smoke Test Suite" verbose="1" parallel="false">
-
-    <listeners>
-        <listener class-name="listeners.TestListener"/>
-    </listeners>
-
-    <test name="Smoke Tests - Critical Path" group-by-instances="true">
+<suite name="Smoke Suite" parallel="false">
+    <test name="Critical Path Tests">
+        <groups>
+            <run><include name="smoke"/></run>
+        </groups>
         <classes>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="validLoginTest"/>
-                </methods>
-            </class>
-
-            <class name="tests.ProductsTest">
-                <methods>
-                    <include name="verifyProductsTitleTest"/>
-                    <include name="Add2ItmesTest"/>
-                </methods>
-            </class>
-
-            <class name="tests.CheckoutTests">
-                <methods>
-                    <include name="SuccessfulCheckoutTest"/>
-                </methods>
-            </class>
+            <class name="tests.LoginTest"/>
+            <class name="tests.ProductsTest"/>
+            <class name="tests.ProductDetailsPageTest"/>
+            <class name="tests.CartTests"/>
+            <class name="tests.CheckoutTests"/>
         </classes>
     </test>
-
 </suite>
