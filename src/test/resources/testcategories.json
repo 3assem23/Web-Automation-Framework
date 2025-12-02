@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Priority: BLOCKER",
+    "description": "Critical tests that must pass",
+    "matchedStatuses": ["passed", "failed"],
+    "traceRegex": ".*BLOCKER.*"
+  },
+  {
+    "name": "Priority: CRITICAL",
+    "description": "High-priority tests",
+    "matchedStatuses": ["passed", "failed"],
+    "traceRegex": ".*CRITICAL.*"
+  },
+  {
+    "name": "Test Page: Login ",
+    "traceRegex": ".*LoginTest.*"
+  },
+  {
+    "name": "Feature: Authentication",
+    "traceRegex": ".*Authentication.*"
+  },
+  {
+    "name": "Feature: Shopping Cart",
+    "traceRegex": ".*Shopping Cart.*"
+  }
+]

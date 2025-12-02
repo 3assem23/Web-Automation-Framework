@@ -1,7 +1,6 @@
 package utils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 
 import java.io.InputStream;
@@ -51,7 +50,6 @@ public class EnvFactory {
         return config.timeouts.pageLoad;
     }
 
-    // internal class, matches JSON structure
     private static class EnvConfig {
         String browser;
         boolean headless;

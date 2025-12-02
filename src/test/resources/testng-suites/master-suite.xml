@@ -10,9 +10,7 @@
     <parameter name="suite.type" value="master"/>
 
     <listeners>
-        <listener class-name="listeners.TestListener"/>
-        <listener class-name="listeners.SuiteListener"/>
-        <listener class-name="listeners.RetryListener"/>
+        <listener class-name="listeners.TestNGListener"/>
     </listeners>
 
     <!-- Login Tests (3 tests) -->

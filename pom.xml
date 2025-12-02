@@ -20,11 +20,10 @@
         <testng.version>7.11.0</testng.version>
         <allure.version>2.31.0</allure.version>
         <aspectj.version>1.9.25</aspectj.version>
+        <log4j.version>2.24.3</log4j.version>
         <gson.version>2.13.2</gson.version>
-        <jackson.version>2.16.0</jackson.version>
         <commons-io.version>2.20.0</commons-io.version>
 
-        <!-- Default suite file -->
         <suite.file>src/test/resources/testng-suites/master-suite.xml</suite.file>
     </properties>
 
@@ -41,36 +40,21 @@
         </testResources>
 
         <plugins>
-            <!-- Maven Clean Plugin - ENHANCED -->
+            <!-- Maven Clean Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
                     <filesets>
-                        <!-- Clean Allure results -->
                         <fileset>
                             <directory>${project.build.directory}/allure-results</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
                         </fileset>
-                        <!-- Clean Surefire reports -->
                         <fileset>
                             <directory>${project.build.directory}/surefire-reports</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
                         </fileset>
-                        <!-- Clean generated Allure report -->
                         <fileset>
-                            <directory>${project.build.directory}/site/allure-maven-plugin</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
+                            <directory>logs</directory>
                         </fileset>
                     </filesets>
                 </configuration>
@@ -87,34 +71,21 @@
                 </configuration>
             </plugin>
 
-            <!-- Maven Surefire Plugin (Test Execution) -->
+            <!-- Maven Surefire Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
-                    <!-- Use suite XML file -->
                     <suiteXmlFiles>
                         <suiteXmlFile>${suite.file}</suiteXmlFile>
                     </suiteXmlFiles>
-
-                    <!-- IMPORTANT: Clean results before each run -->
-                    <reuseForks>false</reuseForks>
-                    <forkCount>1</forkCount>
-
-                    <!-- Allure results directory -->
-                    <systemPropertyVariables>
-                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
-                    </systemPropertyVariables>
-
-                    <!-- Allure AspectJ Weaver -->
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
-
-                    <!-- Test failure behavior -->
-                    <testFailureIgnore>false</testFailureIgnore>
-                    <useSystemClassLoader>true</useSystemClassLoader>
+                    <systemPropertyVariables>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -132,24 +103,11 @@
                 <version>2.14.0</version>
                 <configuration>
                     <reportVersion>${allure.version}</reportVersion>
-                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
-                    <reportDirectory>${project.build.directory}/site/allure-maven-plugin</reportDirectory>
                 </configuration>
-                <executions>
-                    <!-- Auto-clean before generating report -->
-                    <execution>
-                        <id>clean-allure</id>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
 
-    <!-- Allure BOM -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -170,41 +128,48 @@
             <version>${selenium.version}</version>
         </dependency>
 
-        <!-- TestNG Framework -->
+        <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
         </dependency>
 
-        <!-- Allure TestNG Integration -->
+        <!-- Allure TestNG -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-testng</artifactId>
         </dependency>
 
-        <!-- AspectJ Weaver -->
+        <!-- AspectJ -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
 
-        <!-- Gson (JSON Parsing) -->
+        <!-- Log4j2 Core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <!-- Log4j2 API -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
 
-        <!-- Jackson Databind -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-        <!-- Apache Commons IO -->
+        <!-- Commons IO -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
