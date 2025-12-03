@@ -10,7 +10,7 @@
              ↓
 ┌─────────────────────────────────┐
 │      PAGE LAYER (POM)           │  ← Page Objects (locators + actions)
-│  LoginPage, ProductsPage...     │
+│  LoginPage, ProductsPage...     │  ← logging
 └────────────┬────────────────────┘
              ↓
 ┌─────────────────────────────────┐
@@ -24,7 +24,7 @@
 └────────────┬────────────────────┘
              ↓
 ┌─────────────────────────────────┐
-│      UTILITY LAYER              │  ← Config, data, logging
+│      UTILITY LAYER              │  ← Config, data
 │  EnvFactory, JsonDataReader     │
 └─────────────────────────────────┘
 ```

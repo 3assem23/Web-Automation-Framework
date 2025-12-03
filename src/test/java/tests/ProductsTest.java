@@ -4,100 +4,53 @@ import io.qameta.allure.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.ProductsPage;
-import utils.AllureLogger;
 import utils.JsonDataReader;
 
 import java.util.List;
 import java.util.Map;
 
-
 @Epic("E-Commerce")
 @Feature("Products Page")
+
 public class ProductsTest extends TestBase {
 
-    // DATA PROVIDERS
-
-    @DataProvider(name = "twoProducts")
-    public Object[][] twoProducts() {
-        List<Map<String, String>> products = JsonDataReader.getProducts();
-        return new Object[][]{{products.get(0), products.get(1)}};
-    }
-
-    @DataProvider(name = "singleProduct")
-    public Object[][] singleProduct() {
-        Map<String, String> product = JsonDataReader.getProducts().get(0);
-        return new Object[][]{{product}};
-    }
-
-
-    // TESTS
-
-    @Test(
-            priority = 1,
-            groups = {"smoke", "products"}
-    )
+    @Test(priority = 1, groups = {"smoke", "products"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Products page displays correctly")
+    @Description("Verify that products page displays correct title 'Products'")
     public void verifyProductsTitleTest() {
-        AllureLogger.logStep("Verifying products page title");
-
-        loginAsUser()
-                .assertProductsTitle("Products");
-
-        AllureLogger.logStep("Products title verified");
+        loginAsUser().assertProductsTitle("Products");
     }
 
-
-    @Test(
-            priority = 2,
-            groups = {"smoke", "cart"},
-            dataProvider = "twoProducts"
-    )
+    @Test(priority = 2, groups = {"smoke", "cart"})
     @Severity(SeverityLevel.CRITICAL)
-    @Story("User can add products to cart")
-    public void Add2ItemsTest(Map<String, String> product1, Map<String, String> product2) {
-        AllureLogger.logStep("Adding 2 items to cart");
-        AllureLogger.logInfo("Product 1: " + product1.get("name"));
-        AllureLogger.logInfo("Product 2: " + product2.get("name"));
+    @Description("Verify that user can add 2 items to cart and cart badge updates correctly")
+    public void Add2ItemsTest() {
+        List<Map<String, String>> allProducts = JsonDataReader.getProducts();
+        Map<String, String> product1 = allProducts.get(0);
+        Map<String, String> product2 = allProducts.get(1);
 
         ProductsPage products = loginAsUser();
 
         products.addToCartById(product1.get("addButtonId"))
                 .addToCartById(product2.get("addButtonId"))
                 .assertCartBadgeCount(2);
-
-        AllureLogger.logStep("Successfully added 2 items");
     }
 
-
-    @Test(
-            priority = 3,
-            groups = {"regression", "cart"}
-    )
+    @Test(priority = 3, groups = {"regression", "cart"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("User can add all products to cart")
+    @Description("Verify that user can add all 6 products to cart and badge shows 6")
     public void AddAllItemsTest() {
-        AllureLogger.logStep("Adding all items to cart");
-
         int totalProducts = JsonDataReader.getProducts().size();
 
         loginAsUser()
                 .addAllItems()
                 .assertCartBadgeCount(totalProducts);
-
-        AllureLogger.logStep("All " + totalProducts + " items added successfully");
     }
 
-
-    @Test(
-            priority = 4,
-            groups = {"regression", "cart"}
-    )
+    @Test(priority = 4, groups = {"regression", "cart"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("User can remove all products from cart")
+    @Description("Verify that user can add all items then remove all items from cart")
     public void RemoveAllItemsTest() {
-        AllureLogger.logStep("Testing add all then remove all");
-
         int totalProducts = JsonDataReader.getProducts().size();
 
         loginAsUser()
@@ -105,44 +58,26 @@ public class ProductsTest extends TestBase {
                 .assertCartBadgeCount(totalProducts)
                 .removeAllItems()
                 .assertCartBadgeCount(0);
-
-        AllureLogger.logStep("Cart successfully emptied");
     }
 
-
-    @Test(
-            priority = 5,
-            groups = {"smoke", "cart"},
-            dataProvider = "singleProduct"
-    )
+    @Test(priority = 5, groups = {"smoke", "cart"})
     @Severity(SeverityLevel.CRITICAL)
-    @Story("User can remove products from cart")
-    public void AddRemoveTest(Map<String, String> product) {
-        AllureLogger.logStep("Testing add and remove single item");
-        AllureLogger.logInfo("Product: " + product.get("name"));
-
+    @Description("Verify that user can add and then remove a single product from cart")
+    public void AddRemoveTest() {
+        Map<String, String> product = JsonDataReader.getProducts().get(0);
         ProductsPage products = loginAsUser();
 
         products.addToCartById(product.get("addButtonId"))
                 .assertCartBadgeCount(1)
                 .removeFromCartById(product.get("removeButtonId"))
                 .assertCartBadgeCount(0);
-
-        AllureLogger.logStep("Add/Remove cycle completed");
     }
 
-
-    @Test(
-            priority = 6,
-            groups = {"regression", "cart"},
-            dataProvider = "singleProduct"
-    )
+    @Test(priority = 6, groups = {"regression", "cart"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Cart maintains correct state")
-    public void AddRemoveAddTest(Map<String, String> product) {
-        AllureLogger.logStep("Testing add-remove-add cycle");
-        AllureLogger.logInfo("Product: " + product.get("name"));
-
+    @Description("Verify that cart maintains correct state through multiple add/remove operations")
+    public void AddRemoveAddTest() {
+        Map<String, String> product = JsonDataReader.getProducts().get(0);
         ProductsPage products = loginAsUser();
 
         products.addToCartById(product.get("addButtonId"))
@@ -151,153 +86,87 @@ public class ProductsTest extends TestBase {
                 .assertCartBadgeCount(0)
                 .addToCartById(product.get("addButtonId"))
                 .assertCartBadgeCount(1);
-
-        AllureLogger.logStep("Cart state maintained correctly");
     }
 
-
-    @Test(
-            priority = 7,
-            groups = {"regression", "sorting"}
-    )
+    @Test(priority = 7, groups = {"regression", "sorting"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Products can be sorted by name")
+    @Description("Verify that products can be sorted alphabetically from A to Z")
     public void sortNameAToZTest() {
-        AllureLogger.logStep("Testing sort by name A to Z");
-
         loginAsUser()
                 .sortByNameAToZ()
                 .assertSortedByNameAscending();
-
-        AllureLogger.logStep("Products sorted A to Z successfully");
     }
 
-
-    @Test(
-            priority = 8,
-            groups = {"regression", "sorting"}
-    )
+    @Test(priority = 8, groups = {"regression", "sorting"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Products can be sorted by name")
+    @Description("Verify that products can be sorted alphabetically from Z to A")
     public void sortNameZToATest() {
-        AllureLogger.logStep("Testing sort by name Z to A");
-
         loginAsUser()
                 .sortByNameZToA()
                 .assertSortedByNameDescending();
-
-        AllureLogger.logStep("Products sorted Z to A successfully");
     }
 
-
-    @Test(
-            priority = 9,
-            groups = {"regression", "sorting"}
-    )
+    @Test(priority = 9, groups = {"regression", "sorting"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Products can be sorted by price")
+    @Description("Verify that products can be sorted by price from low to high")
     public void sortPriceLowToHighTest() {
-        AllureLogger.logStep("Testing sort by price Low to High");
-
         loginAsUser()
                 .sortByPriceLowToHigh()
                 .assertSortedByPriceAscending();
-
-        AllureLogger.logStep("Products sorted Low to High successfully");
     }
 
-
-    @Test(
-            priority = 10,
-            groups = {"regression", "sorting"}
-    )
+    @Test(priority = 10, groups = {"regression", "sorting"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Products can be sorted by price")
+    @Description("Verify that products can be sorted by price from high to low")
     public void sortPriceHighToLowTest() {
-        AllureLogger.logStep("Testing sort by price High to Low");
-
         loginAsUser()
                 .sortByPriceHighToLow()
                 .assertSortedByPriceDescending();
-
-        AllureLogger.logStep("Products sorted High to Low successfully");
     }
 
-
-    @Test(
-            priority = 11,
-            groups = {"regression", "navigation"},
-            dataProvider = "singleProduct"
-    )
+    @Test(priority = 11, groups = {"regression", "navigation"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("User can view product details")
-    public void OpenProductByNameAndVerifyDetailsTest(Map<String, String> product) {
-        AllureLogger.logStep("Testing product navigation by name");
-        AllureLogger.logInfo("Product: " + product.get("name"));
-
+    @Description("Verify that clicking on product name navigates to product details page with correct information")
+    public void testOpenProductByNameAndVerifyDetails() {
+        Map<String, String> product = JsonDataReader.getProducts().get(0);
         loginAsUser()
                 .openProductByName(product.get("name"))
                 .assertItemTitle(product.get("name"))
                 .assertItemPrice(product.get("price"))
                 .assertDescriptionVisible();
-
-        AllureLogger.logStep("Product details verified");
     }
 
-
-    @Test(
-            priority = 12,
-            groups = {"regression", "navigation"},
-            dataProvider = "singleProduct"
-    )
+    @Test(priority = 12, groups = {"regression", "navigation"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("User can view product details")
-    public void OpenProductByImageAndVerifyDetailsTest(Map<String, String> product) {
-        AllureLogger.logStep("Testing product navigation by image");
-
+    @Description("Verify that clicking on product image navigates to product details page with correct information")
+    public void testOpenProductByImageAndVerifyDetails() {
+        Map<String, String> product = JsonDataReader.getProducts().get(0);
         loginAsUser()
                 .openProductByImage(0)
                 .assertItemTitle(product.get("name"))
                 .assertItemPrice(product.get("price"))
                 .assertDescriptionVisible();
-
-        AllureLogger.logStep("Product image navigation verified");
     }
 
-
-    @Test(
-            priority = 13,
-            groups = {"regression", "navigation"}
-    )
+    @Test(priority = 13, groups = {"regression", "navigation"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("All products have accessible detail pages")
-    public void VerifyAllProductsByNameTest() {
-        AllureLogger.logStep("Verifying all products via name links");
-
+    @Description("Verify that all products have accessible detail pages and display correct information when clicked by name")
+    public void testVerifyAllProductsByName() {
         ProductsPage products = loginAsUser();
         List<Map<String, String>> allProducts = JsonDataReader.getProducts();
 
         for (Map<String, String> product : allProducts) {
-            AllureLogger.logInfo("Checking product: " + product.get("name"));
             products.openProductByName(product.get("name"))
                     .assertItemTitle(product.get("name"))
                     .assertDescriptionVisible()
                     .backToProducts();
         }
-
-        AllureLogger.logStep("All products verified via name navigation");
     }
 
-
-    @Test(
-            priority = 14,
-            groups = {"regression", "navigation"}
-    )
+    @Test(priority = 14, groups = {"regression", "navigation"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("All product images are clickable")
-    public void VerifyAllProductsByImageTest() {
-        AllureLogger.logStep("Verifying all products via image links");
-
+    @Description("Verify that all product images are clickable and navigate to correct product details pages")
+    public void testVerifyAllProductsByImage() {
         ProductsPage products = loginAsUser();
         List<Map<String, String>> allProducts = JsonDataReader.getProducts();
 
@@ -305,32 +174,20 @@ public class ProductsTest extends TestBase {
             String expectedName = allProducts.get(i).get("name");
             String expectedPrice = allProducts.get(i).get("price");
 
-            AllureLogger.logInfo("Checking product image " + (i + 1) + ": " + expectedName);
-
             products.openProductByImage(i)
                     .assertItemTitle(expectedName)
                     .assertItemPrice(expectedPrice)
                     .assertDescriptionVisible()
                     .backToProducts();
         }
-
-        AllureLogger.logStep("All products verified via image navigation");
     }
 
-
-    @Test(
-            priority = 15,
-            groups = {"smoke", "navigation"}
-    )
+    @Test(priority = 15, groups = {"smoke", "navigation"})
     @Severity(SeverityLevel.CRITICAL)
-    @Story("User can navigate to cart")
+    @Description("Verify that user can navigate to shopping cart page from products page")
     public void GotoCartTest() {
-        AllureLogger.logStep("Testing navigation to cart page");
-
         loginAsUser()
                 .goToCart()
                 .assertAtCartPage();
-
-        AllureLogger.logStep("Cart navigation verified");
     }
 }

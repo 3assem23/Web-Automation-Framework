@@ -1,6 +1,8 @@
 package pages;
 
 import io.qameta.allure.Step;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -12,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class ProductsPage extends BasePage<ProductsPage> {
+
 
     //LOCATORS
     private final By productsTitle = By.className("title");
@@ -37,7 +39,6 @@ public class ProductsPage extends BasePage<ProductsPage> {
     public final String REMOVE_ONESIE_ID = "remove-sauce-labs-onesie";
     public final String REMOVE_RED_TSHIRT_ID = "remove-test.allthethings()-t-shirt-(red)";
 
-    //BUTTON ARRAYS
     public final String[] ALL_ADD_BUTTONS = {
             BACKPACK_ID, BIKE_LIGHT_ID, BOLT_TSHIRT_ID,
             FLEECE_JACKET_ID, ONESIE_ID, RED_TSHIRT_ID
@@ -51,51 +52,66 @@ public class ProductsPage extends BasePage<ProductsPage> {
     //CONSTRUCTOR
     public ProductsPage(WebDriver driver) {
         super(driver);
+        log.info("Navigated to Products Page");
     }
 
     //ASSERTIONS
 
     @Step("Verify products page title: {expected}")
     public ProductsPage assertProductsTitle(String expected) {
-        Assert.assertEquals(actionsbot.getText(productsTitle), expected,
-                "Page title mismatch");
+        log.info("Verifying products page title - Expected: {}", expected);
+        String actual = actionsbot.getText(productsTitle);
+
+        Assert.assertEquals(actual, expected, "Page title mismatch");
+        log.info("Products title verified: {}", actual);
         return this;
     }
 
-
     @Step("Verify products are sorted by name A to Z")
     public ProductsPage assertSortedByNameAscending() {
+        log.info("Verifying products sorted A to Z");
         List<String> uiNames = getProductNames();
         List<String> sorted = new ArrayList<>(uiNames);
         Collections.sort(sorted);
+
         Assert.assertEquals(uiNames, sorted, "Names are NOT sorted A -> Z");
+        log.info("Products are correctly sorted A to Z");
         return this;
     }
 
     @Step("Verify products are sorted by name Z to A")
     public ProductsPage assertSortedByNameDescending() {
+        log.info("Verifying products sorted Z to A");
         List<String> uiNames = getProductNames();
         List<String> sorted = new ArrayList<>(uiNames);
         sorted.sort(Collections.reverseOrder());
+
         Assert.assertEquals(uiNames, sorted, "Names are NOT sorted Z -> A");
+        log.info("Products are correctly sorted Z to A");
         return this;
     }
 
     @Step("Verify products are sorted by price Low to High")
     public ProductsPage assertSortedByPriceAscending() {
+        log.info("Verifying products sorted by price Low to High");
         List<Double> ui = getProductPrices();
         List<Double> sorted = new ArrayList<>(ui);
         Collections.sort(sorted);
+
         Assert.assertEquals(ui, sorted, "Prices NOT sorted Low -> High");
+        log.info("Products are correctly sorted by price Low to High");
         return this;
     }
 
     @Step("Verify products are sorted by price High to Low")
     public ProductsPage assertSortedByPriceDescending() {
+        log.info("Verifying products sorted by price High to Low");
         List<Double> ui = getProductPrices();
         List<Double> sorted = new ArrayList<>(ui);
         sorted.sort(Collections.reverseOrder());
+
         Assert.assertEquals(ui, sorted, "Prices NOT sorted High -> Low");
+        log.info("Products are correctly sorted by price High to Low");
         return this;
     }
 
@@ -103,36 +119,42 @@ public class ProductsPage extends BasePage<ProductsPage> {
 
     @Step("Add item to cart - Button ID: {addButtonId}")
     public ProductsPage addToCartById(String addButtonId) {
+        log.info("Adding item to cart: {}", addButtonId);
         actionsbot.click(By.id(addButtonId));
         return this;
     }
 
     @Step("Remove item from cart - Button ID: {removeButtonId}")
     public ProductsPage removeFromCartById(String removeButtonId) {
+        log.info("Removing item from cart: {}", removeButtonId);
         actionsbot.click(By.id(removeButtonId));
         return this;
     }
 
     @Step("Add all products to cart (6 items)")
     public ProductsPage addAllItems() {
+        log.info("Adding all {} items to cart", ALL_ADD_BUTTONS.length);
         for (String id : ALL_ADD_BUTTONS) {
             actionsbot.click(By.id(id));
         }
+        log.info("All items added to cart");
         return this;
     }
 
     @Step("Remove all products from cart")
     public ProductsPage removeAllItems() {
+        log.info("Removing all {} items from cart", ALL_REMOVE_BUTTONS.length);
         for (String id : ALL_REMOVE_BUTTONS) {
             actionsbot.click(By.id(id));
         }
+        log.info("All items removed from cart");
         return this;
     }
 
     //SORTING ACTIONS
 
-
     private ProductsPage sort(String visibleText) {
+        log.info("Sorting products by: {}", visibleText);
         WebElement dropdown = driver.findElement(SORT_DROPDOWN);
         new Select(dropdown).selectByVisibleText(visibleText);
         return this;
@@ -162,12 +184,14 @@ public class ProductsPage extends BasePage<ProductsPage> {
 
     @Step("Open product details by name: {name}")
     public ProductDetailsPage openProductByName(String name) {
+        log.info("Opening product by name: {}", name);
         driver.findElement(By.linkText(name)).click();
         return new ProductDetailsPage(driver);
     }
 
     @Step("Open product by image index: {index}")
     public ProductDetailsPage openProductByImage(int index) {
+        log.info("Opening product by image index: {}", index);
         List<WebElement> images = driver.findElements(PRODUCT_IMAGES);
         WebElement targetImage = images.get(index);
 
@@ -182,7 +206,6 @@ public class ProductsPage extends BasePage<ProductsPage> {
 
         return new ProductDetailsPage(driver);
     }
-
 
     //GETTERS
 

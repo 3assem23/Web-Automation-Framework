@@ -4,19 +4,15 @@ import io.qameta.allure.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.LoginPage;
-import utils.AllureLogger;
 import utils.JsonDataReader;
 
 import java.util.List;
 import java.util.Map;
 
-
 @Epic("Authentication")
-@Feature("Login Functionality")
+@Feature("User Login")
+
 public class LoginTest extends TestBase {
-
-    //DATA PROVIDER
-
 
     @DataProvider(name = "invalidCredentials")
     public Object[][] invalidCredentials() {
@@ -28,70 +24,30 @@ public class LoginTest extends TestBase {
         return out;
     }
 
-    //TESTS
-
-    @Test(
-            priority = 0,
-            groups = {"smoke", "sanity"}
-    )
+    @Test(priority = 0, groups = {"smoke", "sanity"})
     @Severity(SeverityLevel.NORMAL)
-    @Story("Login page accessibility")
+    @Description("Verify that login page loads successfully and all elements are visible")
     public void verifyLoginPageLoads() {
-        AllureLogger.logStep("Verifying login page accessibility");
-
         new LoginPage(driver);
-
-        AllureLogger.logInfo("Current URL: " + driver.getCurrentUrl());
-        AllureLogger.logInfo("Page Title: " + driver.getTitle());
-        AllureLogger.logStep("Login page verified successfully");
     }
 
-
-    @Test(
-            priority = 1,
-            groups = {"smoke", "login"}
-    )
+    @Test(priority = 1, groups = {"smoke", "login"})
     @Severity(SeverityLevel.BLOCKER)
-    @Story("User can login with valid credentials")
+    @Description("Verify that user can successfully login with valid username and password")
     public void validLoginTest() {
-        AllureLogger.logStep("Starting valid login test");
-
         Map<String, String> creds = JsonDataReader.getValidLogin();
-        String username = creds.get("username");
-        String password = creds.get("password");
-
-        AllureLogger.logInfo("Username: " + username);
 
         new LoginPage(driver)
-                .login(username, password)
+                .login(creds.get("username"), creds.get("password"))
                 .isloggedin(LoginPage.INVENTORY_URL);
-
-        AllureLogger.logStep("Valid login test completed successfully");
     }
 
-
-    @Test(
-            dataProvider = "invalidCredentials",
-            priority = 2,
-            groups = {"regression","login" ,"negative"}
-    )
+    @Test(dataProvider = "invalidCredentials", priority = 2, groups = {"regression", "login", "negative"})
     @Severity(SeverityLevel.CRITICAL)
-    @Story("User cannot login with invalid credentials")
+    @Description("Verify that system shows appropriate error messages for invalid login attempts")
     public void invalidLoginTest(Map<String, String> testData) {
-        AllureLogger.logStep("Starting invalid login test");
-
-        String username = testData.get("username");
-        String password = testData.get("password");
-        String expectedError = testData.get("expectedError");
-
-        AllureLogger.logInfo("Username: " + (username.isEmpty() ? "[EMPTY]" : username));
-        AllureLogger.logInfo("Password: " + (password.isEmpty() ? "[EMPTY]" : password));
-        AllureLogger.logInfo("Expected Error: " + expectedError);
-
         new LoginPage(driver)
-                .login(username, password)
-                .assertInvalidLoginMessage(expectedError);
-
-        AllureLogger.logStep("Invalid login test completed");
+                .login(testData.get("username"), testData.get("password"))
+                .assertInvalidLoginMessage(testData.get("expectedError"));
     }
 }

@@ -4,19 +4,16 @@ import io.qameta.allure.*;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.ProductsPage;
-import utils.AllureLogger;
-import utils.EnvFactory;
 import utils.JsonDataReader;
 
 import java.util.List;
 import java.util.Map;
 
-
 @Epic("E-Commerce")
 @Feature("Checkout Process")
 public class CheckoutTests extends TestBase {
 
-    //DATA PROVIDER
+    // DATA PROVIDERS
 
     @DataProvider(name = "validCustomers")
     public Object[][] validCustomers() {
@@ -26,7 +23,6 @@ public class CheckoutTests extends TestBase {
         for (int i = 0; i < customers.size(); i++) {
             data[i][0] = customers.get(i);
         }
-
         return data;
     }
 
@@ -34,23 +30,23 @@ public class CheckoutTests extends TestBase {
     public Object[][] invalidCustomers() {
         List<Map<String, String>> customers = JsonDataReader.getInvalidCustomers();
         Object[][] data = new Object[customers.size()][1];
+
         for (int i = 0; i < customers.size(); i++) {
             data[i][0] = customers.get(i);
         }
         return data;
     }
 
-    // TESTS
 
+    // TESTS
 
     @Test(
             priority = 1,
-            groups = {"smoke","checkout"}
+            groups = {"smoke", "checkout"}
     )
     @Severity(SeverityLevel.BLOCKER)
-    @Story("User can complete checkout successfully")
+    @Description("Verify user can complete checkout successfully")
     public void SuccessfulCheckoutTest() {
-        AllureLogger.logStep("Starting successful checkout test");
 
         Map<String, String> customer = JsonDataReader.getValidCustomer(0);
 
@@ -64,8 +60,6 @@ public class CheckoutTests extends TestBase {
                         customer.get("lastName"),
                         customer.get("postalCode")
                 );
-
-        AllureLogger.logStep("Checkout completed successfully");
     }
 
 
@@ -75,10 +69,8 @@ public class CheckoutTests extends TestBase {
             groups = {"regression", "checkout"}
     )
     @Severity(SeverityLevel.CRITICAL)
-    @Story("Checkout works with various customers")
+    @Description("Verify checkout works with various customers")
     public void CheckoutWithMultipleCustomersTest(Map<String, String> customer) {
-
-        AllureLogger.logInfo("Testing with: " + customer.get("firstName") + " " + customer.get("lastName"));
 
         ProductsPage products = loginAsUser();
 
@@ -90,10 +82,7 @@ public class CheckoutTests extends TestBase {
                         customer.get("lastName"),
                         customer.get("postalCode")
                 );
-
-        AllureLogger.logStep("Customer checkout completed successfully");
     }
-
 
 
     @Test(
@@ -101,9 +90,8 @@ public class CheckoutTests extends TestBase {
             groups = {"regression", "checkout", "validation", "Negative"}
     )
     @Severity(SeverityLevel.CRITICAL)
-    @Story("Checkout validates required fields")
+    @Description("Verify checkout validates required fields")
     public void CheckoutShowsErrorWhenEmpty() {
-        AllureLogger.logStep("Testing checkout form validation");
 
         ProductsPage products = loginAsUser();
 
@@ -112,20 +100,17 @@ public class CheckoutTests extends TestBase {
                 .proceedToCheckout()
                 .clickContinue()
                 .assertErrorMessage("Error: First Name is required");
-
-        AllureLogger.logStep("Validation error displayed correctly");
     }
 
 
     @Test(
             priority = 4,
             dataProvider = "invalidCustomers",
-            groups = {"regression", "checkout", "validation","Negative"}
+            groups = {"regression", "checkout", "validation", "Negative"}
     )
     @Severity(SeverityLevel.NORMAL)
-    @Story("Checkout shows error for each missing field")
+    @Description("Verify checkout shows error for each missing field")
     public void CheckoutValidationTest(Map<String, String> customer) {
-        AllureLogger.logStep("Testing validation: " + customer.get("expectedError"));
 
         ProductsPage products = loginAsUser();
 
@@ -137,8 +122,6 @@ public class CheckoutTests extends TestBase {
                 .enterPostalCode(customer.get("postalCode"))
                 .clickContinue()
                 .assertErrorMessage(customer.get("expectedError"));
-
-        AllureLogger.logStep("Validation test passed");
     }
 
 
@@ -147,9 +130,8 @@ public class CheckoutTests extends TestBase {
             groups = {"regression", "checkout", "navigation"}
     )
     @Severity(SeverityLevel.NORMAL)
-    @Story("User can return home after checkout")
+    @Description("Verify user can return home after checkout")
     public void ContinueToHomeAfterComplete() {
-        AllureLogger.logStep("Testing post checkout navigation");
 
         Map<String, String> customer = JsonDataReader.getValidCustomer(1);
 
@@ -165,8 +147,6 @@ public class CheckoutTests extends TestBase {
                 )
                 .backHome()
                 .assertProductsTitle("Products");
-
-        AllureLogger.logStep("Successfully returned to products page");
     }
 
 
@@ -175,9 +155,8 @@ public class CheckoutTests extends TestBase {
             groups = {"smoke", "checkout", "pricing"}
     )
     @Severity(SeverityLevel.BLOCKER)
-    @Story("Checkout calculates prices accurately")
+    @Description("Verify checkout calculates prices accurately")
     public void VerifyCheckoutPricesTest() {
-        AllureLogger.logStep("Testing checkout price calculations");
 
         Map<String, String> customer = JsonDataReader.getValidCustomer(2);
 
@@ -195,8 +174,6 @@ public class CheckoutTests extends TestBase {
                 .assertAllPriceValues()
                 .clickFinish()
                 .assertAtCompletePage();
-
-        AllureLogger.logStep("Price calculations verified successfully");
     }
 
 
@@ -205,9 +182,8 @@ public class CheckoutTests extends TestBase {
             groups = {"regression", "checkout"}
     )
     @Severity(SeverityLevel.NORMAL)
-    @Story("Checkout follows correct page flow")
+    @Description("Verify checkout follows correct page flow")
     public void VerifyCheckoutPageFlow() {
-        AllureLogger.logStep("Testing checkout page progression");
 
         Map<String, String> customer = JsonDataReader.getValidCustomer(0);
 
@@ -225,7 +201,5 @@ public class CheckoutTests extends TestBase {
                 .assertAtOverviewPage()
                 .clickFinish()
                 .assertAtCompletePage();
-
-        AllureLogger.logStep("Checkout page flow verified successfully");
     }
 }
