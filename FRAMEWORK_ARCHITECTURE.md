@@ -70,7 +70,7 @@ loginPage
 
 ```java
 WebDriver driver = WebDriverFactory.initdriver();
-// Reads browser from config → creates Chrome/Edge
+// Reads browser from config → creates Chrome/Edge/firefox
 ```
 
 ---

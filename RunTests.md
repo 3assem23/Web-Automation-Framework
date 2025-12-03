@@ -76,7 +76,7 @@ Edit `src/test/resources/config/env.json`:
 
 ```json
 {
-  "browser": "chrome",    // Options: "chrome", "edge"
+  "browser": "chrome",    // Options: "chrome", "edge", "firefox"
   "headless": false       // true = headless, false = GUI
 }
 ```
