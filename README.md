@@ -74,7 +74,7 @@ mvn clean install -DskipTests
 # All tests
 mvn clean test
 
-# Smoke tests (~3 min)
+# Smoke tests 
 mvn test -DsuiteXmlFile=src/test/resources/testng-suites/smoke-suite.xml
 
 # By group
@@ -95,11 +95,11 @@ mvn allure:serve
 
 ## 📊 Test Coverage
 
-| Suite | Tests | Duration |
-|-------|-------|---------|
-| Master | 45+   | ~15 min |
-| Smoke | 13    | ~3 min |
-| Regression | 32    | ~5 min |
+| Suite | Tests | 
+|-------|----|
+| Master | 45 | 
+| Smoke | 13 | 
+| Regression | 32 |
 
 **Categories:**
 - 🔐 Login (3 tests)

@@ -45,8 +45,8 @@ mvn allure:serve
 
 | Command | Tests | Duration |
 |---------|-------|----------|
-| `mvn test -DsuiteXmlFile=src/test/resources/testng-suites/smoke-suite.xml` | 13    | ~3 min |
-| `mvn test -DsuiteXmlFile=src/test/resources/testng-suites/regression-suite.xml` | 45+   | ~15 min |
+| `mvn test -DsuiteXmlFile=src/test/resources/testng-suites/smoke-suite.xml` | 13    |
+| `mvn test -DsuiteXmlFile=src/test/resources/testng-suites/regression-suite.xml` | 32     |  
 
 ---
 
